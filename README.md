@@ -95,82 +95,62 @@ AI project/
 
 ## 4. Setup and Run Instructions
 
-The application requires no compilers, build pipelines, or npm installations.
+The application now includes an integrated Node.js/Express server that securely serves the entire frontend website and handles online **Google Gemini API** requests.
 
-### Option A: Direct Browser Launch
-1. Locate the project folder in your file explorer.
-2. Double-click `index.html` or drag it into any modern web browser (Google Chrome, Mozilla Firefox, Microsoft Edge, or Apple Safari).
-
-### Option B: Running with VS Code Live Server (Recommended)
-1. Open the project directory in **Visual Studio Code**:
+### Quick Start with Node.js & Google Gemini:
+1. **Configure your API Key**:
+   Create or open the `.env` file in the project root:
    ```bash
-   code .
+   # Add your key from https://aistudio.google.com/app/apikey
+   GEMINI_API_KEY=AIzaSy...your_actual_key_here
+   PORT=3000
    ```
-2. Install the **Live Server** extension (by Ritwick Dey) if you haven't already.
-3. Right-click on `index.html` in the file explorer and select **"Open with Live Server"**.
-4. The website will automatically launch at `http://127.0.0.1:5500/index.html`.
+2. **Start the server**:
+   ```bash
+   npm start
+   ```
+3. **Open the application**:
+   Open [http://localhost:3000](http://localhost:3000) in any modern web browser.
+   The AI Study Chat will now generate real online Gemini responses using the official `@google/genai` SDK!
+
+### Alternative: Standalone Browser Launch (Offline Mode)
+If you do not have Node.js installed or choose not to run the backend:
+1. Double-click `index.html` or open it with VS Code Live Server.
+2. The Planner, Flashcards, Summarizer, Quiz, and Themes will continue running 100% offline.
+3. The AI Study Chat will clearly inform you that the backend server is needed to enable online Gemini responses.
 
 ---
 
 ## 5. Offline Capabilities vs. Real AI Integration
 
-### What Works Fully Offline (No Backend Required):
-- **All Core Features**: Study Planner, Flashcards, Analytics Dashboard, and Theme Toggle run entirely in the browser using client-side JavaScript.
+### What Works Fully Offline:
+- **All Study Utilities**: Study Planner, Flashcards, Analytics Dashboard, and Theme Toggle run entirely in the browser using client-side JavaScript.
 - **Offline Notes Summarization**: Uses an extractive sentence salience algorithm based on term frequency, sentence position, and keyword density.
 - **Offline Quiz Generation**: Uses curated academic question banks and rule-based cloze sentence extractors.
-- **Local Study Assistant**: Contains structured heuristic rules to answer questions regarding study routines, the Feynman Technique, Pomodoro intervals, and active recall.
 
-### Limitations of Offline Mode:
-- The local assistant relies on rule-based keyword matching; it does not generate freeform creative text like a large language model (LLM).
-- Summaries are extractive (selecting the best sentences) rather than abstractive (paraphrasing).
+### Real Online Gemini AI (Powered by `server.js`):
+- **AI Study Chat**: Routes conversations to Google's `gemini-2.5-flash` model via `@google/genai`.
+- **System Instructions**: Custom college-oriented persona providing structured study guides, analogies, formula breakdowns, and active recall suggestions.
+- **Security**: The `GEMINI_API_KEY` stays on the server inside `.env` and is never sent to the browser or committed to Git.
 
 ---
 
-## 6. Secure AI Backend Integration Guide
+## 6. Secure AI Backend Architecture
 
-To prevent leaking private API credentials (such as Google Gemini, OpenAI, or Anthropic API keys), **never place API keys in frontend JavaScript or HTML**. 
-
-### Recommended Architecture:
 ```
 [ Browser (StudyMate Frontend) ]
               │
-              │  POST /api/chat
+              │  POST /api/chat (message + history)
               ▼
-[ Backend Proxy Server (Node.js / Express or Python / FastAPI) ]
-   - Keeps GEMINI_API_KEY / OPENAI_API_KEY in .env
-   - Validates student inputs & rate limits requests
+[ Local Backend Server (server.js / Express) ]
+   - Reads GEMINI_API_KEY from .env (ignored by .git)
+   - Uses official @google/genai SDK
+   - Validates student inputs & handles rate limits/errors
               │
-              │  Secure HTTPS Request with Bearer Token
+              │  Secure HTTPS API Call
               ▼
-[ Gemini / OpenAI / Ollama API ]
+[ Google Gemini API (gemini-2.5-flash) ]
 ```
-
-### Steps to Connect a Real Backend:
-1. Create a lightweight server using Node.js or Python.
-2. Example minimal Node.js/Express server (`server.js`):
-   ```javascript
-   const express = require('express');
-   const cors = require('cors');
-   const app = express();
-   app.use(cors());
-   app.use(express.json());
-
-   // Health check endpoint
-   app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
-
-   // Chat endpoint
-   app.post('/api/chat', async (req, res) => {
-     const { message } = req.body;
-     // Call Gemini or OpenAI using process.env.API_KEY
-     // const response = await aiClient.generateText(message);
-     res.json({ reply: 'AI response from secure backend proxy' });
-   });
-
-   app.listen(3000, () => console.log('Proxy running on port 3000'));
-   ```
-3. Open **Settings & Data** in StudyMate AI.
-4. Set the **Backend API Base URL** to `http://localhost:3000/api`.
-5. Click **"Test Backend Connection"**. Once verified, StudyMate AI will automatically route chat questions through your backend proxy.
 
 ---
 

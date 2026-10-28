@@ -1,0 +1,15 @@
+{
+  "name": "ai-study-assistant",
+  "version": "1.0.0",
+  "description": "AI Study Assistant for College Students with Google Gemini API integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.31.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
