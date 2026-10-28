@@ -37,7 +37,7 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     hasKey: hasKey,
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     message: hasKey 
       ? 'Backend connected and GEMINI_API_KEY detected.' 
       : 'Backend connected, but GEMINI_API_KEY is missing or empty in .env.'
@@ -85,21 +85,20 @@ app.post('/api/chat', async (req, res) => {
 
     const systemInstruction = 'You are StudyMate AI, an expert, encouraging, and structured college study assistant. Help students master complex academic topics, break down lecture notes, explain challenging concepts with clear analogies, and develop effective exam preparation strategies. Use structured markdown formatting with bold text for essential terminology, concise bullet points, and code snippets when explaining technical or mathematical subjects.';
 
-    // Generate content using official Google Gen AI SDK
+    // Generate content using official Google Gen AI SDK (gemini-3.8-flash)
     let response;
     try {
       response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.8-flash',
         contents: contents,
         config: { systemInstruction: systemInstruction }
       });
     } catch (primaryErr) {
-      // Fallback model if gemini-2.5-flash is not available in the region or tier
       const errMsg = primaryErr.message || '';
       if (errMsg.includes('not found') || errMsg.includes('404')) {
-        console.warn('Falling back to gemini-1.5-flash...');
+        console.warn('Falling back to gemini-flash-latest...');
         response = await ai.models.generateContent({
-          model: 'gemini-1.5-flash',
+          model: 'gemini-flash-latest',
           contents: contents,
           config: { systemInstruction: systemInstruction }
         });
@@ -115,6 +114,12 @@ app.post('/api/chat', async (req, res) => {
 
     const errorMessage = error.message || '';
     const status = error.status || 500;
+
+    if (errorMessage.includes('free tier is not available for this project') || errorMessage.includes('billing')) {
+      return res.status(403).json({
+        error: 'Google Gemini Notice: The Google Cloud project linked to your API key requires billing or does not have free tier enabled. To fix this for free: Visit https://aistudio.google.com/app/apikey, click "Create API key in new project", and paste that new key into your .env file.'
+      });
+    }
 
     if (errorMessage.includes('API_KEY_INVALID') || errorMessage.includes('API key not valid') || status === 400 || status === 403) {
       return res.status(403).json({
@@ -134,12 +139,40 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Start the Express server
-app.listen(PORT, () => {
-  console.log(`StudyMate AI server running at http://localhost:${PORT}`);
-  if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
-    console.warn(`[Notice] GEMINI_API_KEY is not configured in .env. Please set it to enable live Gemini AI responses.`);
-  } else {
-    console.log(`[Success] GEMINI_API_KEY detected. Online Gemini AI ready.`);
+// Start the Express server with port fallback and dual host binding
+const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
+const FALLBACK_PORTS = [DEFAULT_PORT, 5000, 8080, 5050, 4000];
+
+function startServer(portIndex = 0) {
+  if (portIndex >= FALLBACK_PORTS.length) {
+    console.error('All candidate ports are in use. Could not start server.');
+    process.exit(1);
   }
-});
+
+  const currentPort = FALLBACK_PORTS[portIndex];
+  const server = app.listen(currentPort, '0.0.0.0', () => {
+    console.log(`\n==================================================`);
+    console.log(`  StudyMate AI Server is LIVE!`);
+    console.log(`  > Primary URL:  http://localhost:${currentPort}`);
+    console.log(`  > Direct IP:    http://127.0.0.1:${currentPort}`);
+    console.log(`==================================================\n`);
+
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
+      console.warn(`[Notice] GEMINI_API_KEY is not configured in .env.`);
+      console.warn(`To enable live Gemini AI responses, paste your API key in .env and restart.\n`);
+    } else {
+      console.log(`[Success] GEMINI_API_KEY detected. Online Gemini AI ready.\n`);
+    }
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.warn(`Port ${currentPort} is busy. Trying port ${FALLBACK_PORTS[portIndex + 1]}...`);
+      startServer(portIndex + 1);
+    } else {
+      console.error('Server error:', err);
+    }
+  });
+}
+
+startServer(0);
