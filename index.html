@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Study Assistant for College Students - Organize studies, summarize notes, practice quizzes, and master flashcards.">
+  <title>StudyMate AI | Modern College Study Assistant</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Mobile Overlay Backdrop -->
+  <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+  <!-- Main App Wrapper -->
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar" aria-label="Main Navigation">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              <path d="M9 10l2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">StudyMate <span class="brand-badge">AI</span></span>
+            <span class="brand-subtitle">College Assistant</span>
+          </div>
+        </div>
+        <button id="close-sidebar-btn" class="icon-btn mobile-only" aria-label="Close navigation sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <ul class="nav-list" role="menubar">
+          <li role="none">
+            <button class="nav-item active" data-section="dashboard" role="menuitem" aria-current="page">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="9"></rect>
+                <rect x="14" y="3" width="7" height="5"></rect>
+                <rect x="14" y="12" width="7" height="9"></rect>
+                <rect x="3" y="16" width="7" height="5"></rect>
+              </svg>
+              <span>Dashboard</span>
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-item" data-section="chat" role="menuitem">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <span>AI Study Chat</span>
+              <span class="nav-tag">Assistant</span>
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-item" data-section="summarizer" role="menuitem">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="21" y1="10" x2="3" y2="10"></line>
+                <line x1="21" y1="6" x2="3" y2="6"></line>
+                <line x1="21" y1="14" x2="3" y2="14"></line>
+                <line x1="14" y1="18" x2="3" y2="18"></line>
+              </svg>
+              <span>Notes Summarizer</span>
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-item" data-section="quiz" role="menuitem">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <span>Quiz Generator</span>
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-item" data-section="planner" role="menuitem">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>Study Planner</span>
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-item" data-section="flashcards" role="menuitem">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+              <span>Revision Flashcards</span>
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-item" data-section="settings" role="menuitem">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings & Data</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status-pill">
+          <span class="status-indicator online"></span>
+          <span class="status-label" id="system-status-text">Local Heuristics Mode</span>
+        </div>
+        <p class="sidebar-disclaimer">Runs 100% locally. Zero API key needed.</p>
+      </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <div class="main-wrapper">
+      <!-- Top Header Bar -->
+      <header class="top-header">
+        <div class="header-left">
+          <button id="toggle-sidebar-btn" class="icon-btn" aria-label="Open sidebar menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="header-breadcrumb">
+            <span class="breadcrumb-app">StudyMate AI</span>
+            <span class="breadcrumb-separator">/</span>
+            <h1 class="breadcrumb-current" id="current-page-title">Dashboard</h1>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Streak Pill -->
+          <div class="streak-badge" id="study-streak-badge" title="Daily study streak counter">
+            <span class="streak-icon" aria-hidden="true">🔥</span>
+            <span class="streak-text"><strong id="streak-days-count">1</strong> Day Streak</span>
+          </div>
+
+          <!-- Theme Toggle Button -->
+          <button id="theme-toggle-btn" class="icon-btn" aria-label="Toggle dark and light theme" title="Toggle theme">
+            <span class="theme-icon-light" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </span>
+            <span class="theme-icon-dark" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Body Sections -->
+      <main class="content-area" id="main-content">
+        <!-- ============================================== -->
+        <!-- SECTION 1: DASHBOARD & STUDY ANALYTICS        -->
+        <!-- ============================================== -->
+        <section id="section-dashboard" class="content-section active-section" aria-labelledby="heading-dashboard">
+          <div class="section-header">
+            <div>
+              <h2 id="heading-dashboard" class="section-title">Study Dashboard</h2>
+              <p class="section-description">Real-time study metrics, task completion progress, and quick-start tools.</p>
+            </div>
+            <div class="section-actions">
+              <button class="btn btn-secondary btn-sm" id="load-sample-data-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Load Sample College Data</span>
+              </button>
+              <button class="btn btn-primary btn-sm" id="dash-add-task-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>New Task</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Key Metrics Grid -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Total Tasks</span>
+                <div class="metric-icon bg-blue-subtle text-blue">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-value" id="stat-total-tasks">0</div>
+              <div class="metric-footer text-muted" id="stat-total-subtext">No tasks added yet</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Completed Tasks</span>
+                <div class="metric-icon bg-green-subtle text-green">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-value text-green" id="stat-completed-tasks">0</div>
+              <div class="metric-footer">
+                <span class="badge badge-success" id="stat-completion-pct">0% Finished</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Pending Tasks</span>
+                <div class="metric-icon bg-amber-subtle text-amber">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-value text-amber" id="stat-pending-tasks">0</div>
+              <div class="metric-footer text-muted" id="stat-pending-subtext">Waiting to be finished</div>
+            </div>
+
+            <div class="metric-card" id="metric-overdue-card">
+              <div class="metric-header">
+                <span class="metric-title">Overdue Tasks</span>
+                <div class="metric-icon bg-red-subtle text-red">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-value" id="stat-overdue-tasks">0</div>
+              <div class="metric-footer text-muted" id="stat-overdue-subtext">All deadlines on track</div>
+            </div>
+          </div>
+
+          <!-- Quick Access Cards -->
+          <div class="dashboard-section-title">Quick Actions</div>
+          <div class="quick-actions-grid">
+            <button class="quick-action-card" data-section="chat">
+              <div class="quick-action-icon bg-blue-subtle text-blue">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+              <div class="quick-action-info">
+                <h4>Ask Study Assistant</h4>
+                <p>Clarify difficult syllabus topics & revision strategies</p>
+              </div>
+            </button>
+
+            <button class="quick-action-card" data-section="summarizer">
+              <div class="quick-action-icon bg-purple-subtle text-purple">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="21" y1="10" x2="3" y2="10"></line>
+                  <line x1="21" y1="6" x2="3" y2="6"></line>
+                  <line x1="21" y1="14" x2="3" y2="14"></line>
+                  <line x1="14" y1="18" x2="3" y2="18"></line>
+                </svg>
+              </div>
+              <div class="quick-action-info">
+                <h4>Summarize Lecture Notes</h4>
+                <p>Extract bullet points, definitions & core takeaways</p>
+              </div>
+            </button>
+
+            <button class="quick-action-card" data-section="quiz">
+              <div class="quick-action-icon bg-green-subtle text-green">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+              </div>
+              <div class="quick-action-info">
+                <h4>Generate Practice Quiz</h4>
+                <p>Test your knowledge with instant MCQ scoring</p>
+              </div>
+            </button>
+
+            <button class="quick-action-card" data-section="flashcards">
+              <div class="quick-action-icon bg-amber-subtle text-amber">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+              </div>
+              <div class="quick-action-info">
+                <h4>Review Revision Cards</h4>
+                <p>3D flip cards to boost retention & active recall</p>
+              </div>
+            </button>
+          </div>
+
+          <!-- Analytics & Breakdown Section -->
+          <div class="analytics-row">
+            <!-- Overall Task Progress Card -->
+            <div class="card analytics-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Overall Task Completion</h3>
+                  <p class="card-subtitle">Real-time study milestone progress</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="completion-container">
+                  <div class="progress-ring-wrapper">
+                    <svg class="progress-ring" width="130" height="130" viewBox="0 0 120 120" aria-hidden="true">
+                      <circle class="progress-ring-bg" stroke-width="10" cx="60" cy="60" r="50"></circle>
+                      <circle id="dash-progress-ring-bar" class="progress-ring-indicator" stroke-width="10" stroke-linecap="round" cx="60" cy="60" r="50"></circle>
+                    </svg>
+                    <div class="progress-ring-content">
+                      <span class="progress-ring-pct" id="dash-circle-pct">0%</span>
+                      <span class="progress-ring-label">Done</span>
+                    </div>
+                  </div>
+                  <div class="completion-details">
+                    <div class="completion-stat-row">
+                      <span class="stat-bullet bg-green"></span>
+                      <span class="stat-name">Completed</span>
+                      <strong class="stat-count" id="dash-stat-completed-num">0</strong>
+                    </div>
+                    <div class="completion-stat-row">
+                      <span class="stat-bullet bg-amber"></span>
+                      <span class="stat-name">Pending</span>
+                      <strong class="stat-count" id="dash-stat-pending-num">0</strong>
+                    </div>
+                    <div class="completion-stat-row">
+                      <span class="stat-bullet bg-red"></span>
+                      <span class="stat-name">Overdue</span>
+                      <strong class="stat-count" id="dash-stat-overdue-num">0</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subject-Wise Progress Card -->
+            <div class="card analytics-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Subject-Wise Progress</h3>
+                  <p class="card-subtitle">Breakdown of tasks organized by course</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="subject-progress-container" class="subject-progress-list">
+                  <!-- Dynamically populated or empty state -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity & Study Advice -->
+          <div class="dashboard-bottom-grid">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recent Study Activity</h3>
+                <button class="btn btn-ghost btn-sm" id="clear-activity-btn" title="Clear activity log">Clear</button>
+              </div>
+              <div class="card-body">
+                <ul class="activity-timeline" id="recent-activity-list">
+                  <!-- Dynamically populated -->
+                </ul>
+              </div>
+            </div>
+
+            <div class="card tip-card">
+              <div class="card-header">
+                <div class="tip-header-title">
+                  <span class="tip-badge">💡 College Study Method</span>
+                  <h3 class="card-title" id="daily-study-tip-title">The Pomodoro Technique</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="tip-content" id="daily-study-tip-content">
+                  Study with high focus for 25 minutes, then take a 5-minute break. After 4 sessions, take a longer 20-minute rest. This prevents cognitive burnout and maintains concentration for tough college lectures.
+                </p>
+                <div class="tip-actions">
+                  <button class="btn btn-secondary btn-sm" id="next-study-tip-btn">Next Tip</button>
+                  <button class="btn btn-outline btn-sm" data-section="chat">Discuss in Chat</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 2: AI STUDY CHAT                       -->
+        <!-- ============================================== -->
+        <section id="section-chat" class="content-section" aria-labelledby="heading-chat" hidden>
+          <div class="section-header">
+            <div>
+              <h2 id="heading-chat" class="section-title">AI Study Chat</h2>
+              <p class="section-description">Ask study questions, clarify college lecture concepts, and receive structured study plans.</p>
+            </div>
+            <div class="section-actions">
+              <button class="btn btn-secondary btn-sm" id="clear-chat-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <span>Clear Chat</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Chat Mode & Security Notice Banner -->
+          <div class="banner banner-info" id="chat-mode-banner">
+            <div class="banner-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </div>
+            <div class="banner-content">
+              <strong>Offline Mode Active:</strong> You are currently using the local rule-based study helper. Responses are generated entirely in your browser using structured educational logic without sending data across the internet. To connect a live generative AI model (e.g. Gemini, OpenAI, Ollama), configure a backend proxy in <a href="#settings" class="inline-link" data-section="settings">Settings</a>.
+            </div>
+          </div>
+
+          <!-- Chat Container -->
+          <div class="chat-container card">
+            <!-- Messages Scrollable Box -->
+            <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
+              <!-- Populated dynamically -->
+            </div>
+
+            <!-- Suggested Quick Questions -->
+            <div class="chat-suggestions" id="chat-suggestions">
+              <span class="suggestions-label">Try asking:</span>
+              <button class="suggestion-chip" data-prompt="Explain the Feynman Technique for studying college subjects.">Feynman Technique</button>
+              <button class="suggestion-chip" data-prompt="How do I prepare a study schedule for finals week?">Finals Study Schedule</button>
+              <button class="suggestion-chip" data-prompt="Give me effective tips for active recall and spaced repetition.">Active Recall Tips</button>
+              <button class="suggestion-chip" data-prompt="How do I avoid procrastination when working on tough assignments?">Overcoming Procrastination</button>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="chat-input-bar">
+              <form id="chat-form" class="chat-form">
+                <label for="chat-input" class="sr-only">Type your study question</label>
+                <textarea 
+                  id="chat-input" 
+                  class="chat-textarea" 
+                  placeholder="Ask a study question or request an explanation (Press Enter to send, Shift+Enter for new line)..." 
+                  rows="1"
+                  required
+                ></textarea>
+                <div class="chat-form-buttons">
+                  <button type="submit" class="btn btn-primary btn-icon-only" id="chat-send-btn" aria-label="Send message">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 3: NOTES SUMMARIZER                    -->
+        <!-- ============================================== -->
+        <section id="section-summarizer" class="content-section" aria-labelledby="heading-summarizer" hidden>
+          <div class="section-header">
+            <div>
+              <h2 id="heading-summarizer" class="section-title">Notes Summarizer</h2>
+              <p class="section-description">Condense complex college lecture notes into structured executive summaries and bullet points.</p>
+            </div>
+            <div class="section-actions">
+              <button class="btn btn-secondary btn-sm" id="load-sample-note-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Sample Lecture Notes</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="banner banner-neutral">
+            <div class="banner-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </div>
+            <div class="banner-content">
+              <strong>Offline Heuristic Summarizer:</strong> This tool uses a client-side extractive sentence-salience algorithm. It scores sentence importance using term frequency, title relevance, position weighting, and keyword heuristics. It runs locally without sending your private notes to third-party servers.
+            </div>
+          </div>
+
+          <div class="summarizer-grid">
+            <!-- Input Side -->
+            <div class="card summarizer-card">
+              <div class="card-header">
+                <h3 class="card-title">Study Notes Input</h3>
+                <span class="text-muted text-sm" id="notes-word-count">0 words</span>
+              </div>
+              <div class="card-body">
+                <form id="notes-form" class="notes-form">
+                  <div class="form-group">
+                    <label for="note-title" class="form-label">Note Title or Subject (Optional)</label>
+                    <input type="text" id="note-title" class="form-control" placeholder="e.g. Operating Systems: Process Scheduling & Deadlocks">
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group flex-1">
+                      <label for="summary-length" class="form-label">Target Bullet Count</label>
+                      <select id="summary-length" class="form-select">
+                        <option value="3">Quick Overview (3 Key Points)</option>
+                        <option value="5" selected>Standard Review (5 Key Points)</option>
+                        <option value="8">Detailed Study (8 Key Points)</option>
+                      </select>
+                    </div>
+                    <div class="form-group flex-1">
+                      <label for="summary-format" class="form-label">Formatting Style</label>
+                      <select id="summary-format" class="form-select">
+                        <option value="standard" selected>Executive Summary & Bullets</option>
+                        <option value="bullets">Bullet Points Only</option>
+                        <option value="definitions">Concept & Definition Focus</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="note-content" class="form-label">Raw Lecture or Textbook Text <span class="required">*</span></label>
+                    <textarea 
+                      id="note-content" 
+                      class="form-control note-textarea" 
+                      placeholder="Paste your raw lecture notes, chapter excerpts, or revision material here (minimum 20 words recommended)..." 
+                      rows="10"
+                      required
+                    ></textarea>
+                    <div class="input-hint" id="notes-validation-msg">Provide at least 20 words for meaningful extraction.</div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="summarize-btn">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="21" y1="10" x2="3" y2="10"></line>
+                        <line x1="21" y1="6" x2="3" y2="6"></line>
+                        <line x1="21" y1="14" x2="3" y2="14"></line>
+                        <line x1="14" y1="18" x2="3" y2="18"></line>
+                      </svg>
+                      <span>Generate Summary</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="clear-notes-btn">Clear All</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Output Side -->
+            <div class="card summarizer-card" id="summary-output-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Generated Study Summary</h3>
+                  <p class="card-subtitle" id="summary-meta-subtext">Output will appear here after clicking Generate</p>
+                </div>
+                <div class="card-header-actions" id="summary-actions-bar" style="display: none;">
+                  <button class="btn btn-ghost btn-sm" id="copy-summary-btn" title="Copy summary to clipboard">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                  <button class="btn btn-secondary btn-sm" id="turn-summary-to-flashcard-btn" title="Create a flashcard from this summary">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                    <span>Save to Flashcards</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="card-body">
+                <!-- Empty State -->
+                <div class="empty-state" id="summary-empty-state">
+                  <div class="empty-state-icon" aria-hidden="true">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                  </div>
+                  <h4 class="empty-state-title">No Summary Generated Yet</h4>
+                  <p class="empty-state-desc">Paste your lecture notes or click "Sample Lecture Notes" to test the offline extraction engine.</p>
+                </div>
+
+                <!-- Result Box -->
+                <div id="summary-result-content" class="summary-result-content" style="display: none;">
+                  <!-- Compression Stats Ribbon -->
+                  <div class="summary-stats-ribbon">
+                    <div class="stat-item">
+                      <span class="stat-label">Original:</span>
+                      <strong id="stat-orig-words">0</strong> words
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Summary:</span>
+                      <strong id="stat-sum-words">0</strong> words
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Compression:</span>
+                      <strong class="text-green" id="stat-compression-ratio">0%</strong>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Read Time Saved:</span>
+                      <strong id="stat-time-saved">~0 min</strong>
+                    </div>
+                  </div>
+
+                  <!-- Summary Text -->
+                  <div class="summary-section">
+                    <h4 class="summary-section-heading">Core Overview</h4>
+                    <div class="summary-box" id="summary-overview-box"></div>
+                  </div>
+
+                  <!-- Key Points -->
+                  <div class="summary-section">
+                    <h4 class="summary-section-heading">Key Concept Takeaways</h4>
+                    <ul class="summary-bullets" id="summary-bullets-list"></ul>
+                  </div>
+
+                  <!-- Keywords -->
+                  <div class="summary-section" id="summary-keywords-section">
+                    <h4 class="summary-section-heading">High-Salience Keywords</h4>
+                    <div class="keywords-cloud" id="summary-keywords-cloud"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 4: MULTIPLE-CHOICE QUIZ GENERATOR      -->
+        <!-- ============================================== -->
+        <section id="section-quiz" class="content-section" aria-labelledby="heading-quiz" hidden>
+          <div class="section-header">
+            <div>
+              <h2 id="heading-quiz" class="section-title">Multiple-Choice Quiz Generator</h2>
+              <p class="section-description">Test your subject mastery with customized quizzes, instant scoring, and detailed explanations.</p>
+            </div>
+          </div>
+
+          <div class="banner banner-neutral">
+            <div class="banner-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </div>
+            <div class="banner-content">
+              <strong>Offline Question Engine:</strong> Quizzes are generated from curated college question banks and rule-based text cloze algorithms. No remote AI API calls are executed in offline mode.
+            </div>
+          </div>
+
+          <!-- Quiz Setup Panel -->
+          <div class="card quiz-card" id="quiz-setup-panel">
+            <div class="card-header">
+              <h3 class="card-title">Configure Your Quiz</h3>
+              <p class="card-subtitle">Choose a pre-built subject or paste your own study text</p>
+            </div>
+            <div class="card-body">
+              <form id="quiz-config-form">
+                <div class="form-group">
+                  <label class="form-label">Quiz Source Type</label>
+                  <div class="radio-toggle-group">
+                    <label class="radio-card">
+                      <input type="radio" name="quiz-source-type" value="subject" checked id="quiz-source-preset">
+                      <span class="radio-card-content">
+                        <strong>Curated College Subjects</strong>
+                        <small>Choose from verified academic subjects</small>
+                      </span>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="quiz-source-type" value="custom" id="quiz-source-custom">
+                      <span class="radio-card-content">
+                        <strong>Custom Study Notes</strong>
+                        <small>Generate cloze MCQs from your notes</small>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Subject Select (shown when subject chosen) -->
+                <div class="form-group" id="quiz-subject-group">
+                  <label for="quiz-subject-select" class="form-label">Select Academic Subject</label>
+                  <select id="quiz-subject-select" class="form-select">
+                    <option value="cs">Computer Science (Data Structures, Algorithms & OS)</option>
+                    <option value="bio">Biology & Cell Genetics</option>
+                    <option value="psych">Psychology & Cognitive Science</option>
+                    <option value="math">College Calculus & Statistics</option>
+                    <option value="history">World History & Modern Civilizations</option>
+                  </select>
+                </div>
+
+                <!-- Custom Text Area (shown when custom chosen) -->
+                <div class="form-group" id="quiz-custom-text-group" style="display: none;">
+                  <label for="quiz-custom-text" class="form-label">Paste Study Text to Formulate Questions</label>
+                  <textarea 
+                    id="quiz-custom-text" 
+                    class="form-control" 
+                    rows="6" 
+                    placeholder="Paste paragraphs from your study guide or lecture notes. The local engine will extract key concept questions and distractors..."
+                  ></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group flex-1">
+                    <label for="quiz-difficulty" class="form-label">Difficulty Level</label>
+                    <select id="quiz-difficulty" class="form-select">
+                      <option value="easy">Easy (Fundamentals & Definitions)</option>
+                      <option value="medium" selected>Medium (Application & Concepts)</option>
+                      <option value="hard">Hard (Analysis & Multi-step)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group flex-1">
+                    <label for="quiz-count" class="form-label">Number of Questions</label>
+                    <select id="quiz-count" class="form-select">
+                      <option value="3">3 Questions (Quick check)</option>
+                      <option value="5" selected>5 Questions (Standard)</option>
+                      <option value="10">10 Questions (Comprehensive)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary" id="start-quiz-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>Start Practice Quiz</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Active Quiz Play Panel -->
+          <div class="card quiz-card" id="quiz-play-panel" style="display: none;">
+            <div class="card-header quiz-play-header">
+              <div>
+                <span class="badge badge-primary" id="quiz-play-subject-badge">Subject</span>
+                <span class="badge badge-neutral" id="quiz-play-difficulty-badge">Medium</span>
+              </div>
+              <div class="quiz-progress-text">
+                Question <span id="quiz-current-q-num">1</span> of <span id="quiz-total-q-num">5</span>
+              </div>
+            </div>
+
+            <!-- Quiz Progress Bar -->
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="quiz-progress-bar-fill" style="width: 20%;"></div>
+            </div>
+
+            <div class="card-body quiz-body">
+              <div class="quiz-question-box">
+                <h3 class="quiz-question-text" id="quiz-question-text">Question loading...</h3>
+              </div>
+
+              <!-- Options List -->
+              <div class="quiz-options-list" id="quiz-options-container" role="radiogroup" aria-labelledby="quiz-question-text">
+                <!-- Dynamically populated options -->
+              </div>
+
+              <div class="quiz-nav-actions">
+                <button type="button" class="btn btn-secondary" id="quiz-prev-btn" disabled>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                  </svg>
+                  <span>Previous</span>
+                </button>
+
+                <button type="button" class="btn btn-primary" id="quiz-next-btn">
+                  <span>Next Question</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+
+                <button type="button" class="btn btn-success" id="quiz-submit-btn" style="display: none;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Submit & View Results</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz Results Panel -->
+          <div class="card quiz-card" id="quiz-results-panel" style="display: none;">
+            <div class="card-body text-center quiz-results-body">
+              <div class="results-score-badge" id="results-score-badge">
+                <span class="score-number" id="results-score-text">0 / 0</span>
+                <span class="score-pct" id="results-pct-text">0%</span>
+              </div>
+              <h3 class="results-title" id="results-grade-title">Quiz Completed!</h3>
+              <p class="results-feedback" id="results-feedback-text">Good effort! Review the detailed answer explanations below to strengthen your understanding.</p>
+
+              <div class="results-actions">
+                <button type="button" class="btn btn-primary" id="quiz-retake-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="1 4 1 10 7 10"></polyline>
+                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                  </svg>
+                  <span>Retake This Quiz</span>
+                </button>
+                <button type="button" class="btn btn-secondary" id="quiz-new-btn">
+                  <span>Configure New Quiz</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="card-header border-top">
+              <h4 class="card-title">Detailed Question Review & Explanations</h4>
+            </div>
+            <div class="card-body">
+              <div class="quiz-review-list" id="quiz-review-container">
+                <!-- Populated with question reviews, right/wrong flags, and explanations -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 5: STUDY PLANNER & TASK MANAGEMENT     -->
+        <!-- ============================================== -->
+        <section id="section-planner" class="content-section" aria-labelledby="heading-planner" hidden>
+          <div class="section-header">
+            <div>
+              <h2 id="heading-planner" class="section-title">Study Planner & Task Management</h2>
+              <p class="section-description">Track deadlines, organize coursework tasks by subject, and monitor progress.</p>
+            </div>
+            <div class="section-actions">
+              <button class="btn btn-primary btn-sm" id="planner-add-task-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Add Study Task</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter & Control Bar -->
+          <div class="task-controls-card card">
+            <div class="task-filter-tabs" role="tablist">
+              <button class="task-tab-btn active" data-filter="all" role="tab" aria-selected="true">All Tasks (<span id="count-all-tasks">0</span>)</button>
+              <button class="task-tab-btn" data-filter="pending" role="tab" aria-selected="false">Pending (<span id="count-pending-tasks">0</span>)</button>
+              <button class="task-tab-btn" data-filter="completed" role="tab" aria-selected="false">Completed (<span id="count-completed-tasks">0</span>)</button>
+              <button class="task-tab-btn" data-filter="overdue" role="tab" aria-selected="false">Overdue (<span id="count-overdue-tasks">0</span>)</button>
+            </div>
+
+            <div class="task-filter-inputs">
+              <div class="form-group-inline">
+                <label for="task-subject-filter" class="sr-only">Filter by Subject</label>
+                <select id="task-subject-filter" class="form-select form-select-sm">
+                  <option value="all">All Subjects</option>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <div class="form-group-inline">
+                <label for="task-sort-by" class="sr-only">Sort Tasks</label>
+                <select id="task-sort-by" class="form-select form-select-sm">
+                  <option value="dueDateAsc">Due Date: Earliest First</option>
+                  <option value="dueDateDesc">Due Date: Latest First</option>
+                  <option value="priority">Priority (High to Low)</option>
+                  <option value="title">Title (A-Z)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Task List Container -->
+          <div class="task-list-wrapper">
+            <div id="tasks-container" class="task-items-list" role="list">
+              <!-- Populated dynamically -->
+            </div>
+
+            <!-- Empty State for Tasks -->
+            <div id="tasks-empty-state" class="empty-state card" style="display: none;">
+              <div class="empty-state-icon" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
+              <h4 class="empty-state-title">No Study Tasks Found</h4>
+              <p class="empty-state-desc">You don't have any tasks matching this filter. Add a new study task or load demo data to organize your college schedule.</p>
+              <div class="empty-state-actions">
+                <button class="btn btn-primary btn-sm" id="empty-add-task-btn">Add Your First Task</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 6: REVISION FLASHCARDS                 -->
+        <!-- ============================================== -->
+        <section id="section-flashcards" class="content-section" aria-labelledby="heading-flashcards" hidden>
+          <div class="section-header">
+            <div>
+              <h2 id="heading-flashcards" class="section-title">Revision Flashcards</h2>
+              <p class="section-description">Active recall flashcards with 3D flip animation, mastery status, and shuffle.</p>
+            </div>
+            <div class="section-actions">
+              <button class="btn btn-secondary btn-sm" id="shuffle-flashcards-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 3 21 3 21 8"></polyline>
+                  <line x1="4" y1="20" x2="21" y2="3"></line>
+                  <polyline points="21 16 21 21 16 21"></polyline>
+                  <line x1="15" y1="15" x2="21" y2="21"></line>
+                  <line x1="4" y1="4" x2="9" y2="9"></line>
+                </svg>
+                <span>Shuffle</span>
+              </button>
+              <button class="btn btn-primary btn-sm" id="new-flashcard-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Add Flashcard</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Flashcard Filters & Progress Bar -->
+          <div class="flashcards-control-card card">
+            <div class="flashcard-status-bar">
+              <div class="fc-stat-item">
+                <span class="text-muted">Deck Position:</span>
+                <strong id="fc-position-text">Card 1 of 1</strong>
+              </div>
+              <div class="fc-stat-item">
+                <span class="text-muted">Mastery Rate:</span>
+                <strong class="text-green" id="fc-mastery-text">0% Mastered</strong>
+              </div>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill bg-green" id="fc-mastery-bar-fill" style="width: 0%;"></div>
+            </div>
+
+            <div class="flashcard-filter-row">
+              <div class="form-group-inline">
+                <label for="fc-subject-filter" class="form-label-inline">Subject:</label>
+                <select id="fc-subject-filter" class="form-select form-select-sm">
+                  <option value="all">All Subjects</option>
+                  <!-- Dynamically populated -->
+                </select>
+              </div>
+
+              <div class="form-group-inline">
+                <label for="fc-status-filter" class="form-label-inline">Status:</label>
+                <select id="fc-status-filter" class="form-select form-select-sm">
+                  <option value="all">All Cards</option>
+                  <option value="needs-revision">Needs Revision</option>
+                  <option value="mastered">Mastered Only</option>
+                </select>
+              </div>
+
+              <div class="fc-view-toggle">
+                <button class="btn btn-outline btn-sm active" id="fc-deck-view-btn">Card Deck</button>
+                <button class="btn btn-outline btn-sm" id="fc-grid-view-btn">All Cards Table</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deck Interactive View -->
+          <div id="fc-deck-view" class="fc-deck-container">
+            <!-- 3D Flippable Card -->
+            <div class="flashcard-scene">
+              <div class="flashcard-card" id="active-flashcard" role="button" tabindex="0" aria-label="Flashcard. Click or press Space to flip.">
+                <!-- Front Side -->
+                <div class="flashcard-face flashcard-front">
+                  <div class="fc-face-header">
+                    <span class="badge badge-primary" id="fc-front-subject">Subject</span>
+                    <span class="fc-flip-hint">Click card or press Space to flip ↺</span>
+                  </div>
+                  <div class="fc-face-body">
+                    <h3 class="fc-front-text" id="fc-front-text">Front Term / Question Loading...</h3>
+                  </div>
+                  <div class="fc-face-footer">
+                    <span class="fc-status-tag" id="fc-front-status">Review</span>
+                  </div>
+                </div>
+
+                <!-- Back Side -->
+                <div class="flashcard-face flashcard-back">
+                  <div class="fc-face-header">
+                    <span class="badge badge-purple" id="fc-back-subject">Answer</span>
+                    <span class="fc-flip-hint">Click card or press Space to flip ↺</span>
+                  </div>
+                  <div class="fc-face-body">
+                    <p class="fc-back-text" id="fc-back-text">Definition / Answer Loading...</p>
+                  </div>
+                  <div class="fc-face-footer">
+                    <span class="fc-status-tag" id="fc-back-status">Review</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Navigation and Mastery Controls -->
+            <div class="fc-actions-row">
+              <button class="btn btn-secondary btn-icon-only" id="fc-prev-btn" aria-label="Previous card" title="Previous card (Left Arrow)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+
+              <div class="fc-mastery-buttons">
+                <button class="btn btn-outline-danger" id="fc-mark-needs-revision-btn" title="Mark as Needs Revision">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                  </svg>
+                  <span>Needs Revision</span>
+                </button>
+
+                <button class="btn btn-outline-success" id="fc-mark-mastered-btn" title="Mark as Mastered">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Mastered</span>
+                </button>
+              </div>
+
+              <button class="btn btn-secondary btn-icon-only" id="fc-next-btn" aria-label="Next card" title="Next card (Right Arrow)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+
+            <div class="fc-card-management-actions">
+              <button class="btn btn-ghost btn-sm" id="fc-edit-card-btn">Edit Card</button>
+              <button class="btn btn-ghost btn-sm text-red" id="fc-delete-card-btn">Delete Card</button>
+            </div>
+          </div>
+
+          <!-- All Cards Grid/Table View (Hidden by default) -->
+          <div id="fc-grid-view" class="fc-grid-container" style="display: none;">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="data-table" id="flashcards-table">
+                    <thead>
+                      <tr>
+                        <th>Subject</th>
+                        <th>Term / Question</th>
+                        <th>Definition / Answer</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="flashcards-table-body">
+                      <!-- Populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State for Flashcards -->
+          <div id="flashcards-empty-state" class="empty-state card" style="display: none;">
+            <div class="empty-state-icon" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+            </div>
+            <h4 class="empty-state-title">No Flashcards Available</h4>
+            <p class="empty-state-desc">Create your first custom flashcard or load college sample cards for rapid exam revision.</p>
+            <div class="empty-state-actions">
+              <button class="btn btn-primary btn-sm" id="empty-add-fc-btn">Create Flashcard</button>
+              <button class="btn btn-secondary btn-sm" id="empty-load-fc-btn">Load 12 Sample Flashcards</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SECTION 7: SETTINGS & DATA MANAGEMENT          -->
+        <!-- ============================================== -->
+        <section id="section-settings" class="content-section" aria-labelledby="heading-settings" hidden>
+          <div class="section-header">
+            <div>
+              <h2 id="heading-settings" class="section-title">Settings & Data Management</h2>
+              <p class="section-description">Manage local browser storage, configure optional AI backend endpoints, and export/import study data.</p>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            <!-- AI Backend Integration Card -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Future AI Backend Integration</h3>
+                  <p class="card-subtitle">Connect your own Node, Python, or Ollama backend proxy</p>
+                </div>
+                <span class="badge badge-neutral" id="settings-backend-status-badge">Offline Mode</span>
+              </div>
+              <div class="card-body">
+                <p class="text-secondary text-sm">
+                  To keep your secret API keys secure, this frontend application does not store private API credentials directly. A secure production setup sends requests to a backend proxy server (such as Node.js / Express or Python FastAPI) which signs requests to Gemini, OpenAI, or Claude.
+                </p>
+
+                <form id="backend-settings-form" class="mt-3">
+                  <div class="form-group">
+                    <label for="backend-url-input" class="form-label">Backend API Base URL</label>
+                    <input type="url" id="backend-url-input" class="form-control" placeholder="http://localhost:3000/api" value="http://localhost:3000/api">
+                    <div class="input-hint">Default proxy endpoint for local development</div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="test-backend-connection-btn">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                      </svg>
+                      <span>Test Backend Connection</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">Save Endpoint</button>
+                  </div>
+                </form>
+
+                <!-- Ping diagnostic result box -->
+                <div id="backend-test-result" class="diagnostic-box mt-3" style="display: none;"></div>
+              </div>
+            </div>
+
+            <!-- Data Backup & Restore Card -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Local Data Backup & Restore</h3>
+                <p class="card-subtitle">Export or import your tasks, flashcards, and preferences as JSON</p>
+              </div>
+              <div class="card-body">
+                <p class="text-secondary text-sm">
+                  All your college study data is stored securely in your browser's <code>localStorage</code>. It stays on this device and is not uploaded to any third-party cloud.
+                </p>
+
+                <div class="backup-actions-grid mt-3">
+                  <button class="btn btn-outline" id="export-data-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Export Data (JSON)</span>
+                  </button>
+
+                  <label class="btn btn-outline" for="import-data-file-input" style="cursor: pointer;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>Import Data (JSON)</span>
+                    <input type="file" id="import-data-file-input" accept=".json" style="display: none;">
+                  </label>
+                </div>
+
+                <div class="danger-zone mt-4">
+                  <h4 class="danger-zone-title">Danger Zone</h4>
+                  <p class="danger-zone-desc">Permanently remove all tasks, flashcards, streaks, and reset to defaults.</p>
+                  <button class="btn btn-danger btn-sm" id="reset-all-data-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    <span>Clear All Local Data</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ADD / EDIT STUDY TASK                   -->
+  <!-- ============================================== -->
+  <div id="task-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="task-modal-title" hidden>
+    <div class="modal-backdrop" id="task-modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="task-modal-title">Add Study Task</h3>
+          <button type="button" class="icon-btn modal-close-btn" id="task-modal-close-btn" aria-label="Close modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <form id="task-form">
+          <input type="hidden" id="task-id-input">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="task-title-input" class="form-label">Task Title <span class="required">*</span></label>
+              <input type="text" id="task-title-input" class="form-control" placeholder="e.g. Read Operating Systems Chapter 4" required minlength="3">
+              <div class="input-hint" id="task-title-error">Enter at least 3 characters.</div>
+            </div>
+
+            <div class="form-group">
+              <label for="task-desc-input" class="form-label">Description (Optional)</label>
+              <textarea id="task-desc-input" class="form-control" rows="3" placeholder="Specific problem sets, pages, or lecture slides..."></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="task-subject-input" class="form-label">Subject / Course <span class="required">*</span></label>
+                <input type="text" id="task-subject-input" class="form-control" placeholder="e.g. Computer Science" list="subject-datalist" required>
+                <datalist id="subject-datalist">
+                  <option value="Computer Science">
+                  <option value="Mathematics">
+                  <option value="Biology">
+                  <option value="Physics">
+                  <option value="Psychology">
+                  <option value="World History">
+                  <option value="Chemistry">
+                  <option value="Literature">
+                </datalist>
+              </div>
+
+              <div class="form-group flex-1">
+                <label for="task-priority-input" class="form-label">Priority</label>
+                <select id="task-priority-input" class="form-select">
+                  <option value="low">Low Priority</option>
+                  <option value="medium" selected>Medium Priority</option>
+                  <option value="high">High Priority (Urgent)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="task-due-date-input" class="form-label">Due Date <span class="required">*</span></label>
+              <input type="date" id="task-due-date-input" class="form-control" required>
+              <div class="input-hint" id="task-date-error">Please select a valid date.</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="task-modal-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="task-modal-save-btn">Save Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ADD / EDIT FLASHCARD                    -->
+  <!-- ============================================== -->
+  <div id="flashcard-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="fc-modal-title" hidden>
+    <div class="modal-backdrop" id="fc-modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="fc-modal-title">Add Revision Flashcard</h3>
+          <button type="button" class="icon-btn modal-close-btn" id="fc-modal-close-btn" aria-label="Close modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <form id="flashcard-form">
+          <input type="hidden" id="fc-id-input">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="fc-subject-input" class="form-label">Subject / Course <span class="required">*</span></label>
+              <input type="text" id="fc-subject-input" class="form-control" placeholder="e.g. Computer Science" list="subject-datalist" required>
+            </div>
+
+            <div class="form-group">
+              <label for="fc-front-input" class="form-label">Front Side (Question / Concept / Term) <span class="required">*</span></label>
+              <textarea id="fc-front-input" class="form-control" rows="3" placeholder="What is a Deadlock in Operating Systems?" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="fc-back-input" class="form-label">Back Side (Answer / Definition / Key Points) <span class="required">*</span></label>
+              <textarea id="fc-back-input" class="form-control" rows="4" placeholder="A situation where a set of processes are blocked because each process is holding a resource and waiting for another resource held by some other process." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="fc-status-input" class="form-label">Initial Status</label>
+              <select id="fc-status-input" class="form-select">
+                <option value="needs-revision" selected>Needs Revision</option>
+                <option value="mastered">Mastered</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="fc-modal-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="fc-modal-save-btn">Save Flashcard</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: CONFIRMATION PROMPT DIALOG              -->
+  <!-- ============================================== -->
+  <div id="confirm-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title" hidden>
+    <div class="modal-backdrop" id="confirm-modal-backdrop"></div>
+    <div class="modal-dialog modal-dialog-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="confirm-modal-title">Confirm Action</h3>
+          <button type="button" class="icon-btn modal-close-btn" id="confirm-modal-close-btn" aria-label="Close modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="confirm-modal-message">Are you sure you want to proceed?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="confirm-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirm-ok-btn">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript File -->
+  <script src="script.js"></script>
+</body>
+</html>
