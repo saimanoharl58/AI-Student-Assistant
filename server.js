@@ -143,14 +143,4 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Start the Express server with port fallback and dual host binding
-module.exports = app;
-
-    return res.status(500).json({
-      error: `Gemini API request failed: ${errorMessage || 'Unknown server error.'}`
-    });
-  }
-});
-
-// Export the Express app for Vercel
 module.exports = app;
