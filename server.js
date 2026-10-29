@@ -14,7 +14,11 @@ app.use(cors());
 app.use(express.json());
 
 // Serve frontend static files
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Lazy-loaded GoogleGenAI client
 let aiClient = null;
@@ -140,7 +144,7 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // Start the Express server with port fallback and dual host binding
-const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
+module.exports = app;
 const FALLBACK_PORTS = [DEFAULT_PORT, 5000, 8080, 5050, 4000];
 
 function startServer(portIndex = 0) {
