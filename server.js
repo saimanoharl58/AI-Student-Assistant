@@ -143,4 +143,10 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`StudyMate AI Server running at http://localhost:${PORT}`);
+  });
+}
+
 module.exports = app;

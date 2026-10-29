@@ -183,7 +183,7 @@
           <div class="section-header">
             <div>
               <h2 id="heading-dashboard" class="section-title">Study Dashboard</h2>
-              <p class="section-description">Real-time study metrics, task completion progress, and quick-start tools.</p>
+              <p class="section-description">Overview of your study tasks, progress, and quick tools.</p>
             </div>
             <div class="section-actions">
               <button class="btn btn-secondary btn-sm" id="load-sample-data-btn">
@@ -204,215 +204,137 @@
             </div>
           </div>
 
-          <!-- Key Metrics Grid -->
+          <!-- 4 Display-Only Summary Cards in One Clean Row -->
           <div class="metrics-grid">
-            <div class="metric-card">
-              <div class="metric-header">
-                <span class="metric-title">Total Tasks</span>
-                <div class="metric-icon bg-blue-subtle text-blue">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                  </svg>
-                </div>
-              </div>
+            <div class="metric-card" id="metric-total-card">
+              <div class="metric-label">Total Tasks</div>
               <div class="metric-value" id="stat-total-tasks">0</div>
-              <div class="metric-footer text-muted" id="stat-total-subtext">No tasks added yet</div>
+              <div class="metric-caption text-muted" id="stat-total-subtext">All registered tasks</div>
             </div>
 
-            <div class="metric-card">
-              <div class="metric-header">
-                <span class="metric-title">Completed Tasks</span>
-                <div class="metric-icon bg-green-subtle text-green">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-              </div>
+            <div class="metric-card" id="metric-completed-card">
+              <div class="metric-label">Completed Tasks</div>
               <div class="metric-value text-green" id="stat-completed-tasks">0</div>
-              <div class="metric-footer">
-                <span class="badge badge-success" id="stat-completion-pct">0% Finished</span>
-              </div>
+              <div class="metric-caption text-muted" id="stat-completion-pct">0% completed</div>
             </div>
 
-            <div class="metric-card">
-              <div class="metric-header">
-                <span class="metric-title">Pending Tasks</span>
-                <div class="metric-icon bg-amber-subtle text-amber">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                </div>
-              </div>
-              <div class="metric-value text-amber" id="stat-pending-tasks">0</div>
-              <div class="metric-footer text-muted" id="stat-pending-subtext">Waiting to be finished</div>
+            <div class="metric-card" id="metric-pending-card">
+              <div class="metric-label">Pending Tasks</div>
+              <div class="metric-value text-blue" id="stat-pending-tasks">0</div>
+              <div class="metric-caption text-muted" id="stat-pending-subtext">Due on schedule</div>
             </div>
 
             <div class="metric-card" id="metric-overdue-card">
-              <div class="metric-header">
-                <span class="metric-title">Overdue Tasks</span>
-                <div class="metric-icon bg-red-subtle text-red">
+              <div class="metric-label">Overdue Tasks</div>
+              <div class="metric-value" id="stat-overdue-tasks">0</div>
+              <div class="metric-caption text-muted" id="stat-overdue-subtext">All deadlines on track</div>
+            </div>
+          </div>
+
+          <!-- Compact Quick Actions -->
+          <div class="dashboard-block">
+            <h3 class="dashboard-section-title">Quick Actions</h3>
+            <div class="quick-actions-grid">
+              <button class="quick-action-card" data-section="chat">
+                <div class="quick-action-icon text-blue">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                   </svg>
                 </div>
-              </div>
-              <div class="metric-value" id="stat-overdue-tasks">0</div>
-              <div class="metric-footer text-muted" id="stat-overdue-subtext">All deadlines on track</div>
+                <div class="quick-action-content">
+                  <span class="quick-action-title">AI Study Chat</span>
+                  <span class="quick-action-subtitle">Ask questions & study methods</span>
+                </div>
+              </button>
+
+              <button class="quick-action-card" data-section="summarizer">
+                <div class="quick-action-icon text-purple">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="21" y1="10" x2="3" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="14" y1="18" x2="3" y2="18"></line>
+                  </svg>
+                </div>
+                <div class="quick-action-content">
+                  <span class="quick-action-title">Summarize Notes</span>
+                  <span class="quick-action-subtitle">Extract key concept bullets</span>
+                </div>
+              </button>
+
+              <button class="quick-action-card" data-section="quiz">
+                <div class="quick-action-icon text-green">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+                <div class="quick-action-content">
+                  <span class="quick-action-title">Practice Quiz</span>
+                  <span class="quick-action-subtitle">Test yourself with instant MCQs</span>
+                </div>
+              </button>
+
+              <button class="quick-action-card" data-section="flashcards">
+                <div class="quick-action-icon text-amber">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                  </svg>
+                </div>
+                <div class="quick-action-content">
+                  <span class="quick-action-title">Revision Cards</span>
+                  <span class="quick-action-subtitle">Active recall & 3D card flips</span>
+                </div>
+              </button>
             </div>
           </div>
 
-          <!-- Quick Access Cards -->
-          <div class="dashboard-section-title">Quick Actions</div>
-          <div class="quick-actions-grid">
-            <button class="quick-action-card" data-section="chat">
-              <div class="quick-action-icon bg-blue-subtle text-blue">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-              </div>
-              <div class="quick-action-info">
-                <h4>Ask Study Assistant</h4>
-                <p>Clarify difficult syllabus topics & revision strategies</p>
-              </div>
-            </button>
-
-            <button class="quick-action-card" data-section="summarizer">
-              <div class="quick-action-icon bg-purple-subtle text-purple">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="21" y1="10" x2="3" y2="10"></line>
-                  <line x1="21" y1="6" x2="3" y2="6"></line>
-                  <line x1="21" y1="14" x2="3" y2="14"></line>
-                  <line x1="14" y1="18" x2="3" y2="18"></line>
-                </svg>
-              </div>
-              <div class="quick-action-info">
-                <h4>Summarize Lecture Notes</h4>
-                <p>Extract bullet points, definitions & core takeaways</p>
-              </div>
-            </button>
-
-            <button class="quick-action-card" data-section="quiz">
-              <div class="quick-action-icon bg-green-subtle text-green">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
-              </div>
-              <div class="quick-action-info">
-                <h4>Generate Practice Quiz</h4>
-                <p>Test your knowledge with instant MCQ scoring</p>
-              </div>
-            </button>
-
-            <button class="quick-action-card" data-section="flashcards">
-              <div class="quick-action-icon bg-amber-subtle text-amber">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                </svg>
-              </div>
-              <div class="quick-action-info">
-                <h4>Review Revision Cards</h4>
-                <p>3D flip cards to boost retention & active recall</p>
-              </div>
-            </button>
-          </div>
-
-          <!-- Analytics & Breakdown Section -->
-          <div class="analytics-row">
-            <!-- Overall Task Progress Card -->
-            <div class="card analytics-card">
-              <div class="card-header">
-                <div>
-                  <h3 class="card-title">Overall Task Completion</h3>
-                  <p class="card-subtitle">Real-time study milestone progress</p>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="completion-container">
-                  <div class="progress-ring-wrapper">
-                    <svg class="progress-ring" width="130" height="130" viewBox="0 0 120 120" aria-hidden="true">
-                      <circle class="progress-ring-bg" stroke-width="10" cx="60" cy="60" r="50"></circle>
-                      <circle id="dash-progress-ring-bar" class="progress-ring-indicator" stroke-width="10" stroke-linecap="round" cx="60" cy="60" r="50"></circle>
-                    </svg>
-                    <div class="progress-ring-content">
-                      <span class="progress-ring-pct" id="dash-circle-pct">0%</span>
-                      <span class="progress-ring-label">Done</span>
-                    </div>
-                  </div>
-                  <div class="completion-details">
-                    <div class="completion-stat-row">
-                      <span class="stat-bullet bg-green"></span>
-                      <span class="stat-name">Completed</span>
-                      <strong class="stat-count" id="dash-stat-completed-num">0</strong>
-                    </div>
-                    <div class="completion-stat-row">
-                      <span class="stat-bullet bg-amber"></span>
-                      <span class="stat-name">Pending</span>
-                      <strong class="stat-count" id="dash-stat-pending-num">0</strong>
-                    </div>
-                    <div class="completion-stat-row">
-                      <span class="stat-bullet bg-red"></span>
-                      <span class="stat-name">Overdue</span>
-                      <strong class="stat-count" id="dash-stat-overdue-num">0</strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Subject-Wise Progress Card -->
-            <div class="card analytics-card">
-              <div class="card-header">
-                <div>
-                  <h3 class="card-title">Subject-Wise Progress</h3>
-                  <p class="card-subtitle">Breakdown of tasks organized by course</p>
-                </div>
-              </div>
-              <div class="card-body">
-                <div id="subject-progress-container" class="subject-progress-list">
-                  <!-- Dynamically populated or empty state -->
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Recent Activity & Study Advice -->
-          <div class="dashboard-bottom-grid">
+          <!-- Clean Study Progress & Recent Activity (2-column layout) -->
+          <div class="dashboard-grid">
+            <!-- Study Progress Card -->
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Recent Study Activity</h3>
+                <div>
+                  <h3 class="card-title">Study Progress</h3>
+                  <p class="card-subtitle">Coursework completion by subject</p>
+                </div>
+                <span class="badge badge-primary" id="dash-circle-pct">0%</span>
+              </div>
+              <div class="card-body">
+                <div class="overall-progress-block">
+                  <div class="overall-progress-header">
+                    <span>Overall Completion</span>
+                    <span class="text-muted text-sm"><span id="dash-stat-completed-num">0</span> of <span id="dash-stat-total-num">0</span> tasks done</span>
+                  </div>
+                  <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="dash-overall-progress-bar" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="subject-progress-section">
+                  <h4 class="subheading">Subjects</h4>
+                  <div id="subject-progress-container" class="subject-progress-list">
+                    <!-- Dynamically populated -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity Card -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Recent Activity</h3>
+                  <p class="card-subtitle">Recent study logs and completions</p>
+                </div>
                 <button class="btn btn-ghost btn-sm" id="clear-activity-btn" title="Clear activity log">Clear</button>
               </div>
               <div class="card-body">
                 <ul class="activity-timeline" id="recent-activity-list">
                   <!-- Dynamically populated -->
                 </ul>
-              </div>
-            </div>
-
-            <div class="card tip-card">
-              <div class="card-header">
-                <div class="tip-header-title">
-                  <span class="tip-badge">💡 College Study Method</span>
-                  <h3 class="card-title" id="daily-study-tip-title">The Pomodoro Technique</h3>
-                </div>
-              </div>
-              <div class="card-body">
-                <p class="tip-content" id="daily-study-tip-content">
-                  Study with high focus for 25 minutes, then take a 5-minute break. After 4 sessions, take a longer 20-minute rest. This prevents cognitive burnout and maintains concentration for tough college lectures.
-                </p>
-                <div class="tip-actions">
-                  <button class="btn btn-secondary btn-sm" id="next-study-tip-btn">Next Tip</button>
-                  <button class="btn btn-outline btn-sm" data-section="chat">Discuss in Chat</button>
-                </div>
               </div>
             </div>
           </div>

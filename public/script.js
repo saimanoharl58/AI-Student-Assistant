@@ -397,19 +397,15 @@ Deadlock handling methods include Deadlock Prevention, Deadlock Avoidance (such 
     statPendingSubtext: document.getElementById('stat-pending-subtext'),
     statOverdueTasks: document.getElementById('stat-overdue-tasks'),
     statOverdueSubtext: document.getElementById('stat-overdue-subtext'),
-    dashProgressRingBar: document.getElementById('dash-progress-ring-bar'),
+    dashOverallProgressBar: document.getElementById('dash-overall-progress-bar'),
     dashCirclePct: document.getElementById('dash-circle-pct'),
     dashStatCompletedNum: document.getElementById('dash-stat-completed-num'),
-    dashStatPendingNum: document.getElementById('dash-stat-pending-num'),
-    dashStatOverdueNum: document.getElementById('dash-stat-overdue-num'),
+    dashStatTotalNum: document.getElementById('dash-stat-total-num'),
     subjectProgressContainer: document.getElementById('subject-progress-container'),
     recentActivityList: document.getElementById('recent-activity-list'),
     clearActivityBtn: document.getElementById('clear-activity-btn'),
     loadSampleDataBtn: document.getElementById('load-sample-data-btn'),
     dashAddTaskBtn: document.getElementById('dash-add-task-btn'),
-    dailyStudyTipTitle: document.getElementById('daily-study-tip-title'),
-    dailyStudyTipContent: document.getElementById('daily-study-tip-content'),
-    nextStudyTipBtn: document.getElementById('next-study-tip-btn'),
 
     // Chat
     chatMessages: document.getElementById('chat-messages'),
@@ -896,47 +892,50 @@ Deadlock handling methods include Deadlock Prevention, Deadlock Avoidance (such 
      9. FEATURE 1: DASHBOARD & STUDY ANALYTICS
      ========================================================================== */
   function updateDashboardAnalytics() {
+    const todayStr = getTodayDateString();
     const total = state.tasks.length;
     const completed = state.tasks.filter(t => t.completed).length;
-    const pending = total - completed;
-
-    const todayStr = getTodayDateString();
+    // Overdue Tasks: incomplete tasks whose due dates have passed
     const overdue = state.tasks.filter(t => !t.completed && t.dueDate && t.dueDate < todayStr).length;
+    // Pending Tasks: tasks that are not completed and are not overdue
+    const pending = state.tasks.filter(t => !t.completed && (!t.dueDate || t.dueDate >= todayStr)).length;
 
     const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-    // Key Metric Cards
-    DOM.statTotalTasks.textContent = total;
-    DOM.statTotalSubtext.textContent = total === 1 ? '1 task registered' : `${total} tasks registered`;
-
-    DOM.statCompletedTasks.textContent = completed;
-    DOM.statCompletionPct.textContent = `${completionRate}% Done`;
-
-    DOM.statPendingTasks.textContent = pending;
-    DOM.statPendingSubtext.textContent = pending === 1 ? '1 task remaining' : `${pending} tasks remaining`;
-
-    DOM.statOverdueTasks.textContent = overdue;
-    const overdueCard = document.getElementById('metric-overdue-card');
-    if (overdue > 0) {
-      DOM.statOverdueSubtext.textContent = `${overdue} overdue milestone${overdue > 1 ? 's' : ''}!`;
-      DOM.statOverdueTasks.classList.add('text-red');
-      overdueCard.classList.add('border-danger');
-    } else {
-      DOM.statOverdueSubtext.textContent = 'All deadlines on track';
-      DOM.statOverdueTasks.classList.remove('text-red');
-      overdueCard.classList.remove('border-danger');
+    // Key Metric Cards (Display-Only Summary Cards)
+    if (DOM.statTotalTasks) DOM.statTotalTasks.textContent = total;
+    if (DOM.statTotalSubtext) {
+      DOM.statTotalSubtext.textContent = total === 1 ? '1 registered task' : `${total} registered tasks`;
     }
 
-    // Circular Progress Ring
-    // Circumference = 2 * π * 50 ≈ 314.159
-    const circumference = 314.159;
-    const offset = circumference - (completionRate / 100) * circumference;
-    DOM.dashProgressRingBar.style.strokeDashoffset = offset;
-    DOM.dashCirclePct.textContent = `${completionRate}%`;
+    if (DOM.statCompletedTasks) DOM.statCompletedTasks.textContent = completed;
+    if (DOM.statCompletionPct) DOM.statCompletionPct.textContent = `${completionRate}% completed`;
 
-    DOM.dashStatCompletedNum.textContent = completed;
-    DOM.dashStatPendingNum.textContent = pending;
-    DOM.dashStatOverdueNum.textContent = overdue;
+    if (DOM.statPendingTasks) DOM.statPendingTasks.textContent = pending;
+    if (DOM.statPendingSubtext) {
+      DOM.statPendingSubtext.textContent = pending === 1 ? '1 task on track' : `${pending} tasks on track`;
+    }
+
+    if (DOM.statOverdueTasks) {
+      DOM.statOverdueTasks.textContent = overdue;
+      if (overdue > 0) {
+        DOM.statOverdueTasks.classList.add('text-red');
+      } else {
+        DOM.statOverdueTasks.classList.remove('text-red');
+      }
+    }
+    if (DOM.statOverdueSubtext) {
+      DOM.statOverdueSubtext.textContent = overdue === 0 ? 'All deadlines on track' : `${overdue} deadline${overdue > 1 ? 's' : ''} passed`;
+    }
+
+    // Overall Progress Bar & Percentage
+    if (DOM.dashCirclePct) DOM.dashCirclePct.textContent = `${completionRate}%`;
+    if (DOM.dashOverallProgressBar) {
+      DOM.dashOverallProgressBar.style.width = `${completionRate}%`;
+    }
+
+    if (DOM.dashStatCompletedNum) DOM.dashStatCompletedNum.textContent = completed;
+    if (DOM.dashStatTotalNum) DOM.dashStatTotalNum.textContent = total;
 
     // Subject-Wise Progress Breakdown
     renderSubjectBreakdown();
@@ -947,8 +946,8 @@ Deadlock handling methods include Deadlock Prevention, Deadlock Avoidance (such 
 
     if (state.tasks.length === 0) {
       DOM.subjectProgressContainer.innerHTML = `
-        <div class="empty-state" style="padding: 24px 0;">
-          <p class="text-muted" style="font-size: 0.9rem;">No courses recorded yet. Add your study tasks in the Planner to view subject analytics.</p>
+        <div class="empty-state" style="padding: 16px 0;">
+          <p class="text-muted" style="font-size: 0.85rem;">No courses recorded yet. Add study tasks in the Planner to view subject progress.</p>
         </div>
       `;
       return;
@@ -984,19 +983,11 @@ Deadlock handling methods include Deadlock Prevention, Deadlock Avoidance (such 
   }
 
   function initStudyTips() {
-    updateTipDisplay();
-    DOM.nextStudyTipBtn.addEventListener('click', () => {
-      state.currentTipIndex = (state.currentTipIndex + 1) % STUDY_TIPS.length;
-      updateTipDisplay();
-    });
+    // Study tips widget simplified out of dashboard
   }
 
   function updateTipDisplay() {
-    const tip = STUDY_TIPS[state.currentTipIndex];
-    if (tip) {
-      DOM.dailyStudyTipTitle.textContent = tip.title;
-      DOM.dailyStudyTipContent.textContent = tip.content;
-    }
+    // Study tips widget simplified out of dashboard
   }
 
   /* ==========================================================================
