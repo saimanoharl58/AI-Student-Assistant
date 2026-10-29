@@ -145,38 +145,12 @@ app.post('/api/chat', async (req, res) => {
 
 // Start the Express server with port fallback and dual host binding
 module.exports = app;
-const FALLBACK_PORTS = [DEFAULT_PORT, 5000, 8080, 5050, 4000];
 
-function startServer(portIndex = 0) {
-  if (portIndex >= FALLBACK_PORTS.length) {
-    console.error('All candidate ports are in use. Could not start server.');
-    process.exit(1);
+    return res.status(500).json({
+      error: `Gemini API request failed: ${errorMessage || 'Unknown server error.'}`
+    });
   }
+});
 
-  const currentPort = FALLBACK_PORTS[portIndex];
-  const server = app.listen(currentPort, '0.0.0.0', () => {
-    console.log(`\n==================================================`);
-    console.log(`  StudyMate AI Server is LIVE!`);
-    console.log(`  > Primary URL:  http://localhost:${currentPort}`);
-    console.log(`  > Direct IP:    http://127.0.0.1:${currentPort}`);
-    console.log(`==================================================\n`);
-
-    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
-      console.warn(`[Notice] GEMINI_API_KEY is not configured in .env.`);
-      console.warn(`To enable live Gemini AI responses, paste your API key in .env and restart.\n`);
-    } else {
-      console.log(`[Success] GEMINI_API_KEY detected. Online Gemini AI ready.\n`);
-    }
-  });
-
-  server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      console.warn(`Port ${currentPort} is busy. Trying port ${FALLBACK_PORTS[portIndex + 1]}...`);
-      startServer(portIndex + 1);
-    } else {
-      console.error('Server error:', err);
-    }
-  });
-}
-
-startServer(0);
+// Export the Express app for Vercel
+module.exports = app;
